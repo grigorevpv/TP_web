@@ -1,0 +1,31 @@
+<html>
+<body>
+   <form method="get" action="">
+        <p>
+           Name: <input type="text" name="name" value = {{ name }}>
+           Age: <input type="text" name="age" value = {{ age }}>
+        </p>
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+    </form>
+    <form method="post" action="">
+        {% csrf_token %}
+        <p>
+           Group: <input type="text" name="group" value={{ group }}>
+           Course: <input type="text" name="course" value={{ course }}>
+        </p>
+        <p>
+            <input type="submit" value="Submit">
+        </p>
+    </form>
+    <p>
+        Get-parameters:<br>
+        Name: {{ name }}<br>
+        Age: {{ age }}<br>
+        Post-parameters:<br>
+        Group: {{ group }}<br>
+        Course: {{ course }}<br>
+    </p>
+</body>
+</html>
