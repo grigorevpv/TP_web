@@ -17,7 +17,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
-				<a class=" label_ask" href="#">Ask-Ask</a>
+				<a class=" label_ask" href="{%url 'hot'%}">Ask-Ask</a>
 			</div>
 			<div class="collapse navbar-collapse">
 				<form class="navbar-form navbar-left search-form" role="form">
@@ -27,8 +27,8 @@
 					<button type="submit" class="btn btn-warning btn-sm">Search</button>
 				</form>         
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="#">LogIn</a></li>
-					<li><a href="#">LogOut</a></li>
+					<li><a href="{%url 'login'%}">LogIn</a></li>
+					<li><a href="#">SingUp</a></li>
 				</ul>
 				<img src="/image/face.png" class="img-rounded navbar-right" alt="Cinque Terre" width="50" height="50"> 
 				<ul class="nav navbar-nav navbar-right">

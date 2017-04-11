@@ -2,9 +2,7 @@
 
 {% block content %}
 <div class="row" style="padding-left: 15px;">
-	<h2 id="header"> New Questions: 
-		<a href="#">  Hot Questions</a>
-	</h2>
+	<h2 id="header"> Tag:{{tagName|default:"Moon"}}</h2>
 </div>
 
 {% for q in questions %}
@@ -17,7 +15,7 @@
 		<div class="col-lg-8">
 			<div class="row">
 				<div class="col-lg-12 center-block">
-					<h3><a href="/ask/question/{{q.1.id}}/">{{q.1.title}}</a></h3>
+					<h3><a href="/ask/question/1/">{{q.1.title}}</a></h3>
 				</div>
 			</div>
 			<div class="row">
@@ -35,10 +33,10 @@
 			<button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 		</div>
 		<div class="col-lg-8">
-			<a href="/ask/question/{{q.1.id}}/">Answers({{q.1.id}})</a>
+			<a href="/ask/question/1/">Answers({{q.1.id}})</a>
 			Tags: 
 			{% for t in q.1.tags %}
-			<a href="/ask/tag/{{t}}/">#{{t}}</a>
+			<a href="/ask/tag/asd/">#{{t}}</a>
 			{% endfor %}
 		</div>
 	</div>
@@ -60,4 +58,3 @@
     </li>
 </ul>
 {% endblock content %}
-
