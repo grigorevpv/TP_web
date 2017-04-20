@@ -17,12 +17,12 @@
 		<div class="col-lg-8">
 			<div class="row">
 				<div class="col-lg-12 center-block">
-					<h3><a href="/ask/question/{{q.1.id}}/">{{q.1.title}}</a></h3>
+					<h3><a href="{% url 'question' q.id %}">{{q.title}}</a></h3>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-12 center-block">
-					<h4><p>{{q.1.text}}</p></h4>
+					<h4><p>{{q.text}}</p></h4>
 				</div>
 			</div>
 		</div>
@@ -35,10 +35,10 @@
 			<button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 		</div>
 		<div class="col-lg-8">
-			<a href="/ask/question/{{q.1.id}}/">Answers({{q.1.id}})</a>
+			<a href="{% url 'question' q.id %}">Answers({{q.id}})</a>
 			Tags: 
-			{% for t in q.1.tags %}
-			<a href="/ask/tag/{{t}}/">#{{t}}</a>
+			{% for t in q.tags.all %}
+			<a href="{% url 'tag' t.name %}">#{{t.name}}</a>
 			{% endfor %}
 		</div>
 	</div>
