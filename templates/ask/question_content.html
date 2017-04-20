@@ -75,6 +75,23 @@
 </div>
 {% endfor %}
 
+    <div class="navbar navbar-center">
+        <ul class="pagination center-block">
+            <li>
+                {% if answer.has_previous %}
+                    <a href="?page={{ answer.previous_page_number }}">&laquo;</a>
+                {% endif %}
+            </li>
+
+            <li><a href="#">{{answer.number}}</a></li>
+            <li>
+                {% if answer.has_next %}
+                    <a href="?page={{ answer.next_page_number }}">&raquo;</a>
+                {% endif %}
+            </li>
+        </ul>
+    </div>
+
 <hr/>
 
 <div class="form-group">

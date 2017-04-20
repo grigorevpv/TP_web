@@ -10,11 +10,11 @@ from django.shortcuts import render_to_response
 
 def paginate(request, qs):
 	try:
-		limit = int(request.GET.get('limit', 4))
+		limit = int(request.GET.get('limit', 3))
 	except ValueError:
-		limit = 4
+		limit = 3
 	if limit > 100:
-		limit = 8
+		limit = 6
 	try:
 		page = int(request.GET.get('page', 1))
 	except ValueError:
@@ -60,10 +60,12 @@ def tag(request, tag_name):
 def question(request, question_id):
 	template = loader.get_template('ask/question_content.html')
 	question_ = Logic.get_question(question_id)
-	answer_ = Logic.get_answers(question_id)
+	# answer_ = Logic.get_answers(question_id)
+	answer_ = Question.objects.all()
+	page = paginate(request, answer_)
 	context = RequestContext(request, {
 		'question': question_,
-		'answer': answer_,
+		'answer': page,
 	})
 	return HttpResponse(template.render(context))
 
