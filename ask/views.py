@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms.forms import LoginForm
 from ask.models import Question, QuestionManager, Answer, Tag, Logic
+from django.contrib import auth
 from django.shortcuts import render_to_response
 
 
@@ -37,20 +38,34 @@ def hot(request):
 	template = loader.get_template('ask/main_content.html')
 	questions = Question.objects.best_questions()
 	page = paginate(request, questions)
-	context = RequestContext(request, {
-		'questions': page,
-	})
+	tags = Tag.objects.all()[:5]
+	user = auth.get_user(request)
+	if user.is_authenticated:
+		print("name = %s" % user.get_username())
+		context = RequestContext(request, {
+			'questions': page,
+			't': tags,
+			'user': user
+		})
+	else:
+		print("not")
+		context = RequestContext(request, {
+			'questions': page,
+			't': tags,
+		})
 	return HttpResponse(template.render(context))
 
 
 def tag(request, tag_name):
 	template = loader.get_template('ask/tag_content.html')
 	questions = Logic.get_tag(tag_name)
+	tags = Tag.objects.all()[:5]
 	if questions:
 		page = paginate(request, questions)
 		context = RequestContext(request, {
 			'tag_name': tag_name,
 			'questions': page,
+			't': tags
 		})
 		return HttpResponse(template.render(context))
 	else:
@@ -60,12 +75,14 @@ def tag(request, tag_name):
 def question(request, question_id):
 	template = loader.get_template('ask/question_content.html')
 	question_ = Logic.get_question(question_id)
-	# answer_ = Logic.get_answers(question_id)
-	answer_ = Question.objects.all()
+	answer_ = Logic.get_answers(question_id)
+	# answer_ = Question.objects.all()
+	tags = Tag.objects.all()[:5]
 	page = paginate(request, answer_)
 	context = RequestContext(request, {
 		'question': question_,
 		'answer': page,
+		't': tags
 	})
 	return HttpResponse(template.render(context))
 
@@ -84,23 +101,27 @@ def login(request):
 		else:
 			form = LoginForm()
 
-	return render(request, 'ask/login_content.html', {'form': form} )
+	return render(request, 'ask/login_content.html', {'form': form})
 
-# context = RequestContext(request, {
-# 	'form': form,
-# 	})
-# return HttpResponse(template.render(context))
+
+def logout(request):
+	auth.logout(request)
+	return HttpResponseRedirect('hot/')
+
 
 def signup(request):
 	template = loader.get_template('ask/signup_content.html')
 	context = RequestContext(request, {})
 	return HttpResponse(template.render(context))
 
+
 def list(request, list):
 	return HttpResponse("You're at the %s page" %list)
 
+
 def hello(request):
 	return HttpResponse("Hello, world. You're at the ask index.")
+
 
 @csrf_exempt
 def get_post(request):
@@ -123,72 +144,7 @@ def get_post(request):
 
 	return HttpResponse(template.render(context))
 
-# ------------------------------------------------
-# from __future__ import unicode_literals
-#
-# from django.db import models
-# from django.contrib.auth.models import User
-# from datetime import datetime
-#
-# GOOD_RATING = 10
-#
-#
-# class Profile(models.Model):
-# 	avatar = models.ImageField(upload_to="avatars/")
-# 	user = models.OneToOneField(User)
-#
-#
-# class QuestionManager(models.Manager):
-# 	def best_questions(self):
-# 		self.filter(rating__gt=GOOD_RATING).order_by('-rating')
-#
-# 	def new_questions(self):
-# 		return self.order_by('-created_at')
-#
-# 	def get_tag(self, tag):
-# 		testtag = Tag.objects.filter(name=tag)
-# 		if testtag:
-# 			return Question.objects.best_questions().filter(tag__name__exact=tag)
-# 		else:
-# 			Question.objects.none()
-#
-#
-# class Question(models.Model):
-# 	title = models.CharField(max_length=60)
-# 	text = models.TextField()
-# 	auth = models.ForeignKey(User)
-# 	rating = models.IntegerField()
-# 	created = models.DateTimeField(default=datetime.now)
-# 	tags = models.ManyToManyField('Tag')
-# 	like = models.IntegerField(default=0)
-#
-# 	objects = QuestionManager()
-#
-# 	def nace_title(self):
-# 		return self.title + '?'
-#
-# 	def __unicode__(self):
-# 		return u'{0}-{1}'.format(self.id, self.title)
-#
-#
-# class Answer(models.Model):
-# 	created = models.DateTimeField(default=datetime.now)
-# 	question = models.ForeignKey(Question, null=True)
-# 	text = models.CharField(max_length=200)
-# 	auth = models.ForeignKey(User)
-# 	rating = models.IntegerField(default=0)
-# 	correct = models.BooleanField(default=False)
-# 	like = models.IntegerField(default=0)
-#
-# 	def __unicode__(self):
-# 		return u'{0}-{1}'.format(self.id, self.text[:60])
-#
-#
-# class Tag(models.Model):
-# 	name = models.CharField(max_length=60)
-#
-#
-#
+
 
 
 

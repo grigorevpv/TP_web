@@ -3,21 +3,24 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<h2 id="header" >Popular Tags</h2>
+                {% for tag in t %}
 				<ul id="list" class="list-inline">
-					<li class="medium_text">Vasia</li>
-					<li class="small_text">Ser123</li>
-					<li class="big_text">Boris</li>
+                    <li class="medium_text"><a href="{% url 'tag' tag.name %}">{{ tag.name }}</a></li>
+                </ul>
+                {% endfor %}
+                    {% comment %}<li class="small_text"><a href="#">Ser123</a></li>
+                    <li class="big_text"><a href="#">Boris</a></li>
 				</ul>
 				<ul id="list" class="list-inline">
-					<li class="small_text">Petro</li>
-					<li class="big_text">Li007</li>
-					<li class="medium_text">Zare</li>
+                    <li class="small_text"><a href="{% url 'tag' t.name %}">{{ t.name }}</a></li>
+                    <li class="big_text"><a href="{% url 'tag' t.name %}">Li007</a><li>
+                    <li class="medium_text"><a href="{% url 'tag' t.name %}">Zare</a></li>
 				</ul>
 				<ul id="list" class="list-inline">
-					<li class="big_text">Same</li>
-					<li class="medium_text">Ak47</li>
-					<li class="small_text">LoL</li>
-				</ul>
+                    <li class="big_text"><a href="{% url 'tag' t.name %}">Same</a></li>
+                    <li class="medium_text"><a href="{% url 'tag' t.name %}">Ak47</a></li>
+                    <li class="small_text"><a href="{% url 'tag' t.name %}">LoL</a></li>
+				</ul>{% endcomment %}
 			</div>
 			<div class="col-lg-12">
 				<h2 id="header">Best Members</h2>

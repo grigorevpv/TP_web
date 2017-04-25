@@ -38,10 +38,19 @@ class Question(models.Model):
 		return u'{0}-{1}'.format(self.id, self.title)
 
 
+class QuestionLike(models.Model):
+	UP = 1
+	DOWN = -1
+
+	question = models.ForeignKey(Question)
+	author = models.ForeignKey(User)
+	value = models.SmallIntegerField(default=1)
+
+
 class Answer(models.Model):
 	created = models.DateTimeField(default=datetime.now)
 	question = models.ForeignKey(Question, null=True)
-	text = models.CharField(max_length=200)
+	text = models.TextField()
 	auth = models.ForeignKey(User)
 	rating = models.IntegerField(default=0)
 	correct = models.BooleanField(default=False)
@@ -51,12 +60,20 @@ class Answer(models.Model):
 		return u'{0}-{1}'.format(self.id, self.text[:60])
 
 
+class AnswerLike(models.Model):
+	UP = 1
+	DOWN = -1
+
+	answer = models.ForeignKey(Answer)
+	author = models.ForeignKey(User)
+	value = models.SmallIntegerField(default=UP)
+
+
 class Tag(models.Model):
 	name = models.CharField(max_length=60)
 
 
 class Logic:
-
 	@staticmethod
 	def get_tag(tag):
 		test_tag = Tag.objects.filter(name=tag)
@@ -80,10 +97,3 @@ class Logic:
 			return test_answers.order_by('-created')
 		else:
 			Question.objects.none()
-
-
-
-
-
-
-
