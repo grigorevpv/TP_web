@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.template import RequestContext, loader
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms.forms import LoginForm
 from ask.models import Question, QuestionManager, Answer, Tag, Logic
-from django.contrib import auth
+from django.contrib.auth import authenticate, login as LogIn, logout as LogOut, get_user
 from django.shortcuts import render_to_response
 
 
@@ -39,20 +40,14 @@ def hot(request):
 	questions = Question.objects.best_questions()
 	page = paginate(request, questions)
 	tags = Tag.objects.all()[:5]
-	user = auth.get_user(request)
-	if user.is_authenticated:
-		print("name = %s" % user.get_username())
-		context = RequestContext(request, {
-			'questions': page,
-			't': tags,
-			'user': user
-		})
-	else:
-		print("not")
-		context = RequestContext(request, {
-			'questions': page,
-			't': tags,
-		})
+	user = get_user(request)
+	if not user.is_authenticated:
+		user = None
+	context = RequestContext(request, {
+		'questions': page,
+		't': tags,
+		'user': user
+	})
 	return HttpResponse(template.render(context))
 
 
@@ -87,25 +82,42 @@ def question(request, question_id):
 	return HttpResponse(template.render(context))
 
 
+# @csrf_exempt
 def login(request):
 	template = loader.get_template('ask/login_content.html')
-
+	user = get_user(request)
+	if not user.is_authenticated:
+		user = None
 	form = LoginForm()
-
+	error_message = "invalid login or password"
+	context = {}
 	if request.method == 'POST':
 		form = LoginForm(request.POST)
-
 		if form.is_valid():
-			return HttpResponse('thanks')
-
+			username = form.cleaned_data['login']
+			print ("login = %s" % username)
+			password = form.cleaned_data['password']
+			print ("password = %s" % password)
+			user = authenticate(username=username, password=password)
+			if user is not None:
+				LogIn(request, user)
+				error_message = ""
+				return HttpResponseRedirect("/ask/hot/")
+			else:
+				print ("unknow user")
 		else:
 			form = LoginForm()
-
-	return render(request, 'ask/login_content.html', {'form': form})
+	context = RequestContext(request, {
+		'user': user,
+		'form': form,
+		'error_message': error_message,
+	})
+	return render(request, 'ask/login_content.html', {'user': user, 'form': form, 'error_message': error_message})
+	return HttpResponse(template.render(context))
 
 
 def logout(request):
-	auth.logout(request)
+	LogOut(request)
 	return HttpResponseRedirect('hot/')
 
 
