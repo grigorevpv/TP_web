@@ -4,8 +4,8 @@ from django.template import RequestContext, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms.forms import LoginForm, AnswerForm, NewQuestionForm
-from ask.models import Question, QuestionManager, Answer, Tag, Logic
+from .forms.forms import LoginForm, AnswerForm, NewQuestionForm, RegisterForm
+from ask.models import Question, QuestionManager, Answer, Tag, Logic, Profile
 from django.contrib.auth import authenticate, login as LogIn, logout as LogOut, get_user
 from django.shortcuts import render_to_response
 
@@ -97,30 +97,16 @@ def question(request, question_id):
 
 
 def login(request):
-	template = loader.get_template('ask/login_content.html')
-	user = get_user(request)
-	if not user.is_authenticated:
-		user = None
-	form = LoginForm()
-	error_message = ""
+	redirect_to = request.GET.get('next', '/ask/hot/')
 	context = {}
 	if request.method == 'POST':
 		form = LoginForm(request.POST)
-		if form.is_valid():
-			username = form.cleaned_data['login']
-			print ("login = %s" % username)
-			password = form.cleaned_data['password']
-			print ("password = %s" % password)
-			user = authenticate(username=username, password=password)
-			if user is not None:
-				LogIn(request, user)
-				return HttpResponseRedirect("/ask/hot/")
-			else:
-				error_message = "invalid login or password"
-				print ("unknow user")
-		else:
-			form = LoginForm()
-	context.update({'user': user, 'form': form, 'error_message': error_message, })
+		context.update({'user': get_authenticate_user(request)})
+		if form.login_user(request):
+			return HttpResponseRedirect(redirect_to)
+	else:
+		form = LoginForm()
+	context.update({'form': form})
 	response = render(request, 'ask/login_content.html', context)
 	return response
 
@@ -131,13 +117,31 @@ def logout(request):
 
 
 def signup(request):
-	template = loader.get_template('ask/signup_content.html')
-	context = RequestContext(request, {})
-	return HttpResponse(template.render(context))
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/ask/hot/')
+	context = ({'user': get_authenticate_user(request)})
+	form = RegisterForm()
+
+	try:
+		path = request.GET['continue']
+		print('continue')
+	except KeyError:
+		path = '/ask/hot/'
+
+	if request.method == 'POST':
+		form = RegisterForm(request.POST, request.FILES)
+		if form.save_user():
+			return HttpResponseRedirect(path)
+		else:
+			HttpResponseRedirect('/ask/hot/#')
+
+	user = get_authenticate_user(request)
+	context.update({'user': user, 'form': form})
+	return render(request, 'ask/signup_content.html', context)
 
 
 def list(request, list):
-	return HttpResponse("You're at the %s page" %list)
+	return HttpResponse("You're at the %s page" % list)
 
 
 def hello(request):
@@ -166,6 +170,9 @@ def get_post(request):
 	return HttpResponse(template.render(context))
 
 
-
-
-
+def get_authenticate_user(request):
+	if request.user.is_authenticated():
+		user = Profile.objects.get(user_id=request.user.id)
+	else:
+		user = None
+	return user

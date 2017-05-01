@@ -5,44 +5,62 @@
 	<h1 id="registrateAccount"> Registration </h1>
 </div>
 <div class="row">
-	<p id="registrateAccount" class="text-danger"> Sorry, this email address already registred!</p>
+    {% for error in form.non_field_errors %}
+        <p id="createAccount" class="text-danger"> {{ error }}</p>
+    {% endfor %}
 </div>
-<form class="form-horizontal">
+<form class="form-horizontal" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
 	<div class="form-group">
 		<label class="col-sm-4 control-label">Login</label>
 		<div class="col-sm-8">
-			<input type="text" class="form-control" placeholder="dr_pepper">
+			<input name="login" type="text" class="form-control" placeholder="dr_pepper">
 		</div>
+        {% for error in form.login.errors %}
+            <p id="createAccount" class="text-danger"> {{ error }}</p>
+        {% endfor %}
 	</div>
 	<div class="form-group">
 		<label for="inputEmail3" class="col-sm-4 control-label">Email</label>
 		<div class="col-sm-8">
-			<input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+			<input name="email" type="email" class="form-control" id="inputEmail3" placeholder="Email">
 		</div>
+        {% for error in form.email.errors %}
+            <p id="createAccount" class="text-danger"> {{ error }}</p>
+        {% endfor %}
 	</div>
 	<div class="form-group">
 		<label class="col-sm-4 control-label">NickName</label>
 		<div class="col-sm-8">
-			<input type="text" class="form-control" placeholder="Dr.Pepper">
+			<input name="nickName" type="text" class="form-control" placeholder="Dr.Pepper">
 		</div>
+        {% for error in form.nickName.errors %}
+            <p id="createAccount" class="text-danger"> {{ error }}</p>
+        {% endfor %}
 	</div>
 	<div class="form-group">
 		<label for="inputPassword3" class="col-sm-4 control-label">Password</label>
 		<div class="col-sm-8">
-			<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+			<input name="password1" type="password" class="form-control" id="inputPassword3" placeholder="Password">
 		</div>
+        {% for error in form.password1.errors %}
+            <p id="createAccount" class="text-danger"> {{ error }}</p>
+        {% endfor %}
 	</div>
 	<div class="form-group">
 		<label for="inputPassword3" class="col-sm-4 control-label">Repeat password</label>
 		<div class="col-sm-8">
-			<input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+			<input name="password2" type="password" class="form-control" id="inputPassword3" placeholder="Password">
 		</div>
 	</div>
 	<div class="form-group">
 		<label class="col-sm-4 control-label">File Inpute</label>
 		<div class="col-sm-8">
-			<input id="chooseFile" type="file" >
+			{{ form.avatar }}
 		</div>
+        {% for error in form.avatar.errors %}
+            <p id="createAccount" class="text-danger"> {{ error }}</p>
+        {% endfor %}
 	</div>
 	<div class="form-group">
 		<div class="col-sm-offset-4 col-sm-8">
