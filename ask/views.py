@@ -4,7 +4,7 @@ from django.template import RequestContext, loader
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms.forms import LoginForm
+from .forms.forms import LoginForm, AnswerForm, NewQuestionForm
 from ask.models import Question, QuestionManager, Answer, Tag, Logic
 from django.contrib.auth import authenticate, login as LogIn, logout as LogOut, get_user
 from django.shortcuts import render_to_response
@@ -30,9 +30,15 @@ def paginate(request, qs):
 
 
 def ask(request):
-	template = loader.get_template('ask/ask_content.html')
-	context = RequestContext(request, {})
-	return HttpResponse(template.render(context))
+	context = {}
+	form = NewQuestionForm
+	context.update({'form': form})
+	user = get_user(request)
+	if not user.is_authenticated:
+		user = None
+	context.update({'user': user})
+	response = render(request, 'ask/ask_content.html', context)
+	return response
 
 
 def hot(request):
@@ -53,6 +59,9 @@ def hot(request):
 
 def tag(request, tag_name):
 	template = loader.get_template('ask/tag_content.html')
+	user = get_user(request)
+	if not user.is_authenticated:
+		user = None
 	questions = Logic.get_tag(tag_name)
 	tags = Tag.objects.all()[:5]
 	if questions:
@@ -60,7 +69,8 @@ def tag(request, tag_name):
 		context = RequestContext(request, {
 			'tag_name': tag_name,
 			'questions': page,
-			't': tags
+			't': tags,
+			'user': user
 		})
 		return HttpResponse(template.render(context))
 	else:
@@ -69,6 +79,9 @@ def tag(request, tag_name):
 
 def question(request, question_id):
 	template = loader.get_template('ask/question_content.html')
+	user = get_user(request)
+	if not user.is_authenticated:
+		user = None
 	question_ = Logic.get_question(question_id)
 	answer_ = Logic.get_answers(question_id)
 	# answer_ = Question.objects.all()
@@ -77,19 +90,19 @@ def question(request, question_id):
 	context = RequestContext(request, {
 		'question': question_,
 		'answer': page,
-		't': tags
+		't': tags,
+		'user': user
 	})
 	return HttpResponse(template.render(context))
 
 
-# @csrf_exempt
 def login(request):
 	template = loader.get_template('ask/login_content.html')
 	user = get_user(request)
 	if not user.is_authenticated:
 		user = None
 	form = LoginForm()
-	error_message = "invalid login or password"
+	error_message = ""
 	context = {}
 	if request.method == 'POST':
 		form = LoginForm(request.POST)
@@ -101,19 +114,15 @@ def login(request):
 			user = authenticate(username=username, password=password)
 			if user is not None:
 				LogIn(request, user)
-				error_message = ""
 				return HttpResponseRedirect("/ask/hot/")
 			else:
+				error_message = "invalid login or password"
 				print ("unknow user")
 		else:
 			form = LoginForm()
-	context = RequestContext(request, {
-		'user': user,
-		'form': form,
-		'error_message': error_message,
-	})
-	return render(request, 'ask/login_content.html', {'user': user, 'form': form, 'error_message': error_message})
-	return HttpResponse(template.render(context))
+	context.update({'user': user, 'form': form, 'error_message': error_message, })
+	response = render(request, 'ask/login_content.html', context)
+	return response
 
 
 def logout(request):

@@ -5,33 +5,25 @@
         <h1 id="createAccount"> Log In </h1>
     </div>
     <div class="row">
-        <p id="createAccount" class="text-danger"> Sorry, wrong password!</p>
+    {% if not error_message.empty %}
+        <p id="createAccount" class="text-danger"> {{ error_message }}</p>
+    {% endif %}
     </div>
     <form class="form-horizontal" method="post">
         {% csrf_token %}
-        {% for field in form %}
-            {% if field.errors %}
-                <div class="control-group error">
-                    <label class="control-label" for="login">{{ field.label }}</label>
-                    <div class="controls">{{ field }}
-                        <span class="help-inline">
-                            {% for error in  field.errors %}{{ error }}{% endfor %}
-                        </span>
-                    </div>
-                </div>
-            {% else %}
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="login">{{ field.label }}</label>
-                    <div class="col-sm-10">{{ field }}
-                        {% if field.help_text %}
-                            <p class="help-inline">
-                                <small>{{ field.help_text }}</small>
-                            </p>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
+         <div class="form-group">
+            <label class="col-sm-2 control-label">login</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="login" placeholder="Enter your login here...">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+                <input type="password"
+                       class="form-control" name="password" placeholder="Enter your password here...">
+            </div>
+        </div>
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-warning"> Log In!</button>

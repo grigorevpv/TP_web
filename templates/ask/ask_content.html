@@ -1,32 +1,59 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="row">
-	<h1 id="header"> New Question </h1>
-</div>
-<form class="form-horizontal">
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Title</label>
-		<div class="col-sm-10">
-		<input type="text" class="form-control" name="title" placeholder="How to build a moon park?">
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Text</label>
-		<div class="col-sm-10">
-			<textarea class="form-control" name="text" rows="5" placeholder="Type your answer..."></textarea>
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="col-sm-2 control-label">Tags</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" name="tags" placeholder="Park, Moon, Build">
-		</div>
-	</div>
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-warning"> Ask! </button>
-		</div>
-	</div>
-</form>
+    <div class="row">
+        <h1 id="header"> New Question </h1>
+    </div>
+    <form class="form-horizontal">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Title</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="title" placeholder="How to build a moon park?">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Text</label>
+            <div class="col-sm-10">
+                <textarea class="form-control" name="text" rows="5" placeholder="Type your answer..."></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Tags</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="tags" placeholder="Park, Moon, Build">
+            </div>
+        </div>
+
+        {% comment %}    <div class="form-group">
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="control-group error">
+                    <label class="control-label" for="login">{{ field.label }}</label>
+                    <div class="controls">{{ field }}
+                        <span class="help-inline">
+                            {% for error in  field.errors %}{{ error }}{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="login">{{ field.label }}</label>
+                    <div class="col-sm-10">{{ field }}
+                        {% if field.help_text %}
+                            <p class="help-inline">
+                                <small>{{ field.help_text }}</small>
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>{% endcomment %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-warning"> Ask!</button>
+            </div>
+        </div>
+    </form>
 {% endblock content %}
