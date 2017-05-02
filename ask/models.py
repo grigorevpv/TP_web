@@ -8,7 +8,7 @@ GOOD_RATING = 5
 
 
 class Profile(models.Model):
-	avatar = models.ImageField(upload_to="static/avatars/", null=True, blank=True)
+	avatar = models.ImageField(upload_to="/static/avatars/", null=True, blank=True)
 	user = models.OneToOneField(User)
 
 

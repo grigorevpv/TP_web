@@ -64,9 +64,9 @@ class RegisterForm(forms.Form):
 
 
 class NewQuestionForm(forms.Form):
-	title = forms.CharField()
-	text = forms.CharField()
-	tags = forms.CharField()
+	title = forms.CharField(label='title', max_length=200)
+	text = forms.CharField(label='text')
+	tags = forms.CharField(label='tags', max_length=62)
 
 
 class AnswerForm(forms.Form):

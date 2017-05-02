@@ -6,8 +6,10 @@ from django.views.decorators import csrf
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .forms.forms import LoginForm, AnswerForm, NewQuestionForm, RegisterForm
 from ask.models import Question, QuestionManager, Answer, Tag, Logic, Profile
+from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as LogIn, logout as LogOut, get_user
 from django.shortcuts import render_to_response
+from datetime import datetime, timedelta
 
 
 def paginate(request, qs):
@@ -30,15 +32,32 @@ def paginate(request, qs):
 
 
 def ask(request):
-	context = {}
-	form = NewQuestionForm
+	user = get_authenticate_user(request)
+	context = {'user': user}
+	form = NewQuestionForm()
+	if request.method == 'POST':
+		form = NewQuestionForm(request.POST)
+		if form.is_valid():
+			question = Question.objects.create(
+				auth=User.objects.get(id=user.id),
+				title=form.cleaned_data.get('title'),
+				text=form.cleaned_data.get('text'),
+				created=datetime.now()
+			)
+			tags = form.cleaned_data.get('tags').split(',')
+			for tag in tags:
+				try:
+					if ' ' in tag:
+						tag = tag.replace(' ', '_')
+					t = Tag.objects.get(name=tag)
+				except Tag.DoesNotExist:
+					t = Tag.objects.create(name=tag)
+					t.save()
+				question.tags.add(t)
+			question.save()
+			return HttpResponseRedirect('/ask/question/' + str(question.id))
 	context.update({'form': form})
-	user = get_user(request)
-	if not user.is_authenticated:
-		user = None
-	context.update({'user': user})
-	response = render(request, 'ask/ask_content.html', context)
-	return response
+	return render(request, 'ask/ask_content.html', context)
 
 
 def hot(request):
@@ -172,6 +191,7 @@ def get_post(request):
 
 def get_authenticate_user(request):
 	if request.user.is_authenticated():
+		print request.user.id
 		user = Profile.objects.get(user_id=request.user.id)
 	else:
 		user = None
