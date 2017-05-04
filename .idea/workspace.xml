@@ -3,15 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5f517811-0aef-4f8a-a7ef-1ab2c28b0991" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ask/urls.py" afterPath="$PROJECT_DIR$/ask/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ask/views.py" afterPath="$PROJECT_DIR$/ask/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ask_grigorev/settings.py" afterPath="$PROJECT_DIR$/ask_grigorev/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/ask/base.html" afterPath="$PROJECT_DIR$/templates/ask/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/ask/main_content.html" afterPath="$PROJECT_DIR$/templates/ask/main_content.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/ask/question_content.html" afterPath="$PROJECT_DIR$/templates/ask/question_content.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/ask/tag_content.html" afterPath="$PROJECT_DIR$/templates/ask/tag_content.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/auth.html" afterPath="$PROJECT_DIR$/templates/auth.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/base.html" afterPath="$PROJECT_DIR$/templates/base.html" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -565,7 +556,14 @@
       <option name="project" value="LOCAL" />
       <updated>1493876670040</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="add static dirs">
+      <created>1493893903559</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1493893903559</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView">
@@ -642,7 +640,8 @@
     <MESSAGE value="logIn form is work" />
     <MESSAGE value="add newQuestion form" />
     <MESSAGE value="add modify Loginform" />
-    <option name="LAST_COMMIT_MESSAGE" value="add modify Loginform" />
+    <MESSAGE value="add static dirs" />
+    <option name="LAST_COMMIT_MESSAGE" value="add static dirs" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
