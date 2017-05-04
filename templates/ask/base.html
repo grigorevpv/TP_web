@@ -9,8 +9,9 @@
     <!-- Bootstrap -->
     <!-- <link href="../bootstrap-3.3.2-dist/css/bootstrap.css" rel="stylesheet"> -->
 	<!-- <link href="../bootstrap-3.3.2-dist/css/style.css" rel="stylesheet"> -->
-	<link href="/bootstrap.css" rel="stylesheet">
-	<link href="/style.css" rel="stylesheet">
+    {% load staticfiles %}
+	<link href="{% static "/bootstrap.css" %}" rel="stylesheet">
+	<link href="{% static "/style.css" %}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Tangerine">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->

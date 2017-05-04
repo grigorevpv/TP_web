@@ -79,6 +79,22 @@ def hot(request):
 	return HttpResponse(template.render(context))
 
 
+def new(request):
+	template = loader.get_template('ask/main_content.html')
+	questions = Question.objects.new_questions()
+	page = paginate(request, questions)
+	tags = Tag.objects.all()[:5]
+	user = get_user(request)
+	if not user.is_authenticated:
+		user = None
+	context = RequestContext(request, {
+		'questions': page,
+		't': tags,
+		'user': user
+	})
+	return HttpResponse(template.render(context))
+
+
 def tag(request, tag_name):
 	template = loader.get_template('ask/tag_content.html')
 	user = get_user(request)

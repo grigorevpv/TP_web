@@ -2,9 +2,10 @@
 
 {% block content %}
 <div class="row" style="padding-left: 15px;">
-	<h2 id="header"> New Questions: 
-		<a href="#">  Hot Questions</a>
-	</h2>
+	<h3 id="header"> Questions:
+		<a href="{% url 'hot' %}">  HotQuestions</a>
+        <a href="{% url 'new' %}">  NewQuestions</a>
+	</h3>
 </div>
 {% for q in questions %}
 <div class="panel panel-default">
@@ -35,7 +36,7 @@
 			<button type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"></span></button>
 		</div>
 		<div class="col-lg-8">
-			<a href="{% url 'question' q.id %}">Answers({{q.id}})</a>
+			<a href="{% url 'question' q.id %}">Answers({{q.answer_set.count}})</a>
 			Tags: 
 			{% for t in q.tags.all %}
 			<a href="{% url 'tag' t.name %}">#{{t.name}}</a>
