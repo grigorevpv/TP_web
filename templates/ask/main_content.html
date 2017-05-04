@@ -6,12 +6,12 @@
 		<a href="#">  Hot Questions</a>
 	</h2>
 </div>
-
 {% for q in questions %}
 <div class="panel panel-default">
 	<div class="row">
 		<div class="col-lg-3" style="padding-top: 10px;">
-			<img id="centerLayer" src="/image/face.png" class="img-responsive center-block" alt="Cinque Terre" width="100" height="100">
+            {% load staticfiles %}
+			<img id="centerLayer" src="{% static "image/face.png" %}" class="img-responsive center-block" alt="Cinque Terre" width="100" height="100">
 		</div>
 
 		<div class="col-lg-8">

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.template import RequestContext, loader
@@ -10,6 +11,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as LogIn, logout as LogOut, get_user
 from django.shortcuts import render_to_response
 from datetime import datetime, timedelta
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def paginate(request, qs):
@@ -31,6 +33,7 @@ def paginate(request, qs):
 	return page
 
 
+@login_required(login_url="/ask/login/")
 def ask(request):
 	user = get_authenticate_user(request)
 	context = {'user': user}
@@ -97,22 +100,41 @@ def tag(request, tag_name):
 
 
 def question(request, question_id):
-	template = loader.get_template('ask/question_content.html')
-	user = get_user(request)
-	if not user.is_authenticated:
-		user = None
-	question_ = Logic.get_question(question_id)
-	answer_ = Logic.get_answers(question_id)
-	# answer_ = Question.objects.all()
-	tags = Tag.objects.all()[:5]
-	page = paginate(request, answer_)
-	context = RequestContext(request, {
-		'question': question_,
-		'answer': page,
-		't': tags,
-		'user': user
-	})
-	return HttpResponse(template.render(context))
+	context = {}
+	try:
+		question_ = Question.objects.get(pk=question_id)
+	except ObjectDoesNotExist:
+		raise Http404
+	form = AnswerForm()
+	user = get_authenticate_user(request)
+	answers = Logic.get_order(question=question_)
+	page = paginate(request, answers)
+	if user:
+		if request.method == 'POST':
+			form = AnswerForm(request.POST)
+			print 'Post'
+		if form.is_valid():
+			answer = Answer.objects.create(
+				auth=User.objects.get(id=user.id),
+				text=form.cleaned_data.get('text'),
+				created=datetime.now(),
+				question=question_)
+			answer.save()
+			print 'save'
+			context.update({'anchor': answer.id})
+			answers = Logic.get_order(question=question_)
+			page_number = 1
+			for index, item in enumerate(answers):
+				if item.id == answer.id:
+					page_number = ((index + 1) / 3) + 1
+			paginator = Paginator(answers, 3)
+			page = paginator.page(page_number)
+		else:
+			print 'not save'
+
+	context.update({'question': question_, 'answer': page, 'user': user, })
+	response = render(request, 'ask/question_content.html', context)
+	return response
 
 
 def login(request):
@@ -192,7 +214,8 @@ def get_post(request):
 def get_authenticate_user(request):
 	if request.user.is_authenticated():
 		print request.user.id
-		user = Profile.objects.get(user_id=request.user.id)
+		return request.user.profile
+		# user = Profile.objects.get(user_id=request.user.id)
 	else:
 		user = None
 	return user

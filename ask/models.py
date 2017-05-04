@@ -8,7 +8,7 @@ GOOD_RATING = 5
 
 
 class Profile(models.Model):
-	avatar = models.ImageField(upload_to="/static/avatars/", null=True, blank=True)
+	avatar = models.ImageField(upload_to="/static/uploads/", null=True, blank=True)
 	user = models.OneToOneField(User)
 
 
@@ -97,3 +97,7 @@ class Logic:
 			return test_answers.order_by('-created')
 		else:
 			Question.objects.none()
+
+	@staticmethod
+	def get_order(question):
+		return question.answer_set.order_by('-rating', '-created')

@@ -93,15 +93,19 @@
     </div>
 
 <hr/>
-
-<div class="form-group">
-	<div class="col-sm-12">
-		<textarea class="form-control" rows="5" placeholder="Type your answer..."></textarea>
-	</div>
-</div>
-<div class="form-group">
-	<div id="tagForma" class=" col-sm-12">
-		<button type="submit" class="btn btn-warning"> Answer! </button>
-	</div>
-</div>
+{% if user %}
+<form class="form-horizontal" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="col-sm-12">
+            <textarea class="form-control" rows="5" name="text" placeholder="Type your answer..."></textarea>
+        </div>
+    </div>
+    <div class="form-group" >
+        <div id="tagForma" class=" col-sm-12">
+            <button type="submit" class="btn btn-warning"> Answer! </button>
+        </div>
+    </div>
+</form>
+{% endif %}
 {% endblock content %}

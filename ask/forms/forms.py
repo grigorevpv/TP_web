@@ -5,8 +5,11 @@ from django.contrib.auth.models import User
 
 
 class LoginForm(forms.Form):
-	login = forms.CharField(label='Login', max_length=100, help_text='Enter your login...')
-	password = forms.CharField(label='Login', max_length=100, widget=forms.PasswordInput())
+	login = forms.CharField(label='Login', max_length=100,
+							widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control'}))
+
+	password = forms.CharField(label='Password', max_length=100,
+							   widget=forms.TextInput(attrs={'type': 'password', 'class': 'form-control'}))
 
 	def login_user(self, request):
 		if self.is_valid():
@@ -70,4 +73,4 @@ class NewQuestionForm(forms.Form):
 
 
 class AnswerForm(forms.Form):
-	answer = forms.CharField(label='answer', max_length=1200)
+	text = forms.CharField()
